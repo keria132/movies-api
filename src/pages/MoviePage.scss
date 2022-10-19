@@ -1,0 +1,66 @@
+
+.header{
+    color: white;
+
+    .header__returnButton{
+        a{
+            &:hover{
+                color: #0dcaf0;
+            }
+            color: inherit;
+            text-decoration: none;
+        }
+    }
+
+    .info{
+        background-repeat: no-repeat;
+        background-size: cover;
+        box-shadow: inset 30vw -15vw 30vw 0vw black;
+        height: 60vw;
+
+        .info__rating, .info__genre, .info__type, .info__year{
+            width: fit-content;
+        }
+
+        .info__rating{
+            align-self: center;
+            color: black;
+            background-color: #F5DE50;
+        }
+
+        .info__watch{
+            margin-top: 25%;
+            font-size: inherit;
+        }
+
+        @media screen and (min-width: 768px) {
+            font-size: 1.5rem;
+            .info__title{
+                font-size: 4rem;
+            }
+            .info__watch{
+                height: 8vw;
+            }
+        }
+
+        @media screen and (min-width: 1200px){
+            .row{
+                margin-left: 5%;
+            }
+            .info__title{
+                margin-bottom: 2%;
+            }
+            .info__watch{
+                height: 6vw;
+            }
+        }
+        
+    }
+}
+
+.main{
+    @media screen and (min-width: 768px){
+        margin-left: 5%;
+        font-size: 1.5rem;
+    }
+}

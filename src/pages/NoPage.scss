@@ -1,0 +1,23 @@
+
+.noPage{
+    height: 100vh;
+    align-content: center;
+
+    .noPage__header{
+        font-size: 3rem;
+
+        @media screen and (min-width: 500px){
+            font-size: 4rem;
+        }
+    }
+
+    .noPage__link{
+        color: #0dcaf0;
+        text-decoration: none;
+        font-size: 1.5rem;
+
+        @media screen and (min-width: 500px){
+            font-size: 2rem;
+        }
+    }
+}
