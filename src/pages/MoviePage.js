@@ -1,6 +1,5 @@
 import { useParams, Link } from "react-router-dom";
 import { useState } from "react";
-// import MetaTags from 'react-meta-tags';
 import "./MoviePage.scss"
 let movie = {};
 
@@ -15,20 +14,17 @@ function MoviePage(){
     }
 
     let backgroundImage;
-    console.log(movie);
+    let bestQuality = 0;
+    
     for(let i = 0; i<movie.images.length; i++){
-        if (movie.images[i].width>=1920){
+        if (movie.images[i].width>=bestQuality){
             backgroundImage =  `url(${movie.images[i].url})`;
-            break;
+            bestQuality = movie.images[i].width;
         }
     }
 
     return (
         <>
-            {/* <MetaTags>
-                <title>Search page</title>
-                <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
-            </MetaTags> */}
 
             <section className="header container-fluid row m-auto p-0">
 
@@ -36,7 +32,7 @@ function MoviePage(){
                     <Link to="/" className="fs-4 fw-light">&lt;Go back</Link>
                 </div>
 
-                <div className="info col-12 ps-3 d-flex align-items-center" style={{backgroundImage: backgroundImage}}>
+                <div className="info col-12 ps-3 pt-5 pb-5 d-flex align-items-center" style={{backgroundImage: backgroundImage}}>
 
                     <div className="row">
                         <h1 className="info__title col-12 mt-3"> { movie.title }</h1>
@@ -94,7 +90,7 @@ function getMovieInfo(id, setState){
                 }
                 movie.description = movieInfo.plotSummary.text;
                 movie.images = movieInfo.images;
-                console.log(movie);
+                // console.log(movie);
                 setState(1);
             }
 

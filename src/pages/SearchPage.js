@@ -33,18 +33,35 @@ class SearchPage extends React.Component{
     }
 
     render(){
+        let cardColor;
+        let background;
+
+        if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+            background = (
+                <div className="background bg-dark"></div>
+            );
+            cardColor = " bg-secondary";
+        }else{
+            background = (
+                <div className="background">
+                    <iframe className="background-video" src=" https://www.youtube-nocookie.com/embed/gA0nQyDZR4A?controls=0&autoplay=1&mute=1&playsinline=1&loop=1&playlist=gA0nQyDZR4A"></iframe>
+                </div>
+            );
+            cardColor = " bg-dark";
+        }
+
         const movie = (
-            <div className="movie bg-dark flex-row flex-wrap p-3 d-flex rounded col-sm-8 col-xl-6">
+            <div className={"movie flex-row flex-wrap p-3 d-flex rounded col-sm-8 col-xl-6" + cardColor}>
 
                 <img className="movie__img rounded me-3" src={ this.state.movie.image } />
 
                 <div className="movieInfo container-md row w-75 d-flex align-content-center">
                     
-                    <Link className='col-9' to={"/movie/" + this.state.movie.id}>
+                    <Link className='col-12 col-md-9' to={"/movie/" + this.state.movie.id}>
                         <h4 className="movieInfo__h1">{ this.state.movie.title }</h4>
                     </Link>
 
-                    <div className="movieInfo__rating p-2 col-3 rounded text-center text-nowrap d-flex justify-content-center align-items-center fw-bold">{"IMDb " + this.state.movie.rating }</div>
+                    <div className="movieInfo__rating p-2 col-5 col-md-3 rounded text-center text-nowrap d-flex justify-content-center align-items-center fw-bold">{"IMDb " + this.state.movie.rating }</div>
                     <div className="movieAbout fw-light col-12 d-flex flex-row flex-wrap">
                         <p className="movieAbout__type">{ this.state.movie.type }</p>
                         <p className="movieAbout__genre ms-2 me-2 ps-2 pe-2 border-start border-end">{ this.state.movie.genre }</p>
@@ -58,20 +75,6 @@ class SearchPage extends React.Component{
             </div>
         );
 
-        let background;
-
-        if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-            background = (
-                <div className="background bg-dark"></div>
-            )
-        }else{
-            background = (
-                <div className="background">
-                    <iframe className="background-video" src=" https://www.youtube-nocookie.com/embed/gA0nQyDZR4A?controls=0&autoplay=1&mute=1&playsinline=1&loop=1&playlist=gA0nQyDZR4A"></iframe>
-                </div>
-            )
-        }
-
         return(
             <>
 
@@ -80,7 +83,6 @@ class SearchPage extends React.Component{
                 <section className="searchPage container-md text-white row mx-auto justify-content-center">
 
                     <h1 className="searchPage__heading col-12 col-md-11 col-lg-10 col-xl-8 text-center mb-5">Unlimited movies, TV shows, and more.<br/><small className="display-6">Watch anywhere. Cancel anytime.</small></h1>
-                    {/* <h2 className="searchPage__description col-12">Watch anywhere. Cancel anytime.</h2> */}
 
                     <div className="searchBar col-10 col-md-9 col-lg-8 col-xl-7 mb-3">
                         <form className='searchBar d-flex justify-content-center input-group'>
