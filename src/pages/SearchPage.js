@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-// import MetaTags from 'react-meta-tags';
 import "./SearchPage.scss"
 
 class SearchPage extends React.Component{
@@ -59,17 +58,24 @@ class SearchPage extends React.Component{
             </div>
         );
 
-        return(
-            <>
+        let background;
 
-                {/* <MetaTags>
-                    <title>Search page</title>
-                    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
-                </MetaTags> */}
-
+        if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+            background = (
+                <div className="background bg-dark"></div>
+            )
+        }else{
+            background = (
                 <div className="background">
                     <iframe className="background-video" src=" https://www.youtube-nocookie.com/embed/gA0nQyDZR4A?controls=0&autoplay=1&mute=1&playsinline=1&loop=1&playlist=gA0nQyDZR4A"></iframe>
                 </div>
+            )
+        }
+
+        return(
+            <>
+
+                {background}
 
                 <section className="searchPage container-md text-white row mx-auto justify-content-center">
 
