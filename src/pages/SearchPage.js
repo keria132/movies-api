@@ -7,7 +7,8 @@ class SearchPage extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            movie: {}
+            movie: {},
+            lastQuery: ""
         }
     }
 
@@ -16,18 +17,24 @@ class SearchPage extends React.Component{
     }
 
     handleSearch(e){
-        e.preventDefault();
         console.log('You clicked submit.');
+
+        e.preventDefault();
         let title = this.state.input;
-        let search = searchMovie.bind(this); //
-        search(title);
+
+        if(title == this.state.lastQuery){
+            console.log("Same request, return...")
+            return;
+        }
+
+        searchMovie(title, (obj) => {this.setState({movie: obj})});
+        this.state.lastQuery = title;
     }
 
     shouldComponentUpdate(nextprops, nextstate){
         if(this.state.movie.title == nextstate.movie.title){
             console.log("Component isn't updated");
             return false;
-            
         }
         return true;
     }
@@ -101,7 +108,7 @@ class SearchPage extends React.Component{
 }
 
 //SEARCH MOVIE FUNCTION
-function searchMovie(title){
+function searchMovie(title, setStateCallback){
 
     if(title === undefined) return;
 
@@ -109,13 +116,16 @@ function searchMovie(title){
     const xhr = new XMLHttpRequest();
     let movieInfo = {};
 
-    let setState = function(movieInfo){
-        this.setState({movie: movieInfo});
-    }.bind(this);
-
     xhr.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 200) {
             let data = JSON.parse(this.response);
+
+            if(data.totalMatches == 0){
+                setStateCallback({});
+                console.log("0 matches")
+                return;
+            }
+
             let result = data.results[0];
             let resultId = result.id.slice(7, -1)
 
@@ -132,7 +142,7 @@ function searchMovie(title){
                 movieInfo.releaseDate = movie.title.year;
                 movieInfo.description = movie.plotOutline.text;
 
-                setState(movieInfo);
+                setStateCallback(movieInfo);
                 console.log(movie);
             }
 
