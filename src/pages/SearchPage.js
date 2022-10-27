@@ -1,4 +1,5 @@
 import React from 'react';
+import { ListGroup } from 'react-bootstrap';
 import { Link } from "react-router-dom";
 import "./SearchPage.scss"
 
@@ -26,9 +27,11 @@ class SearchPage extends React.Component{
             console.log("Same request, return...")
             return;
         }
-
-        searchMovie(title, (obj) => {this.setState({movie: obj})});
+        
         this.state.lastQuery = title;
+        let promise = searchMovie(title);
+        promise.then((result) => this.setState({movie: result}))
+        .catch((error) => console.log("Critical error: " + error.message))
     }
 
     shouldComponentUpdate(nextprops, nextstate){
@@ -108,59 +111,51 @@ class SearchPage extends React.Component{
 }
 
 //SEARCH MOVIE FUNCTION
-function searchMovie(title, setStateCallback){
+function searchMovie(title){
 
     if(title === undefined) return;
 
-    const apiKey = "2d4757e1b6msh13937e276a99188p1775c3jsn2eda7d86d856";
-    const xhr = new XMLHttpRequest();
-    let movieInfo = {};
+    let myHeaders = new Headers({
+        "X-RapidAPI-Key": "2d4757e1b6msh13937e276a99188p1775c3jsn2eda7d86d856",
+        "X-RapidAPI-Host": "online-movie-database.p.rapidapi.com"
+    })
 
-    xhr.onreadystatechange = function() {
-        if (this.readyState === 4 && this.status === 200) {
-            let data = JSON.parse(this.response);
-
-            if(data.totalMatches == 0){
-                setStateCallback({});
-                console.log("0 matches")
-                return;
-            }
-
-            let result = data.results[0];
-            let resultId = result.id.slice(7, -1)
-
-            let detailsRequest = new XMLHttpRequest();
-            detailsRequest.onload = function() {
-                let movie = JSON.parse(this.response);
-                
-                movieInfo.id = resultId;
-                movieInfo.title = movie.title.title;
-                movieInfo.image = movie.title.image.url;
-                movieInfo.rating = movie.ratings.rating;
-                movieInfo.type = movie.title.titleType;
-                movieInfo.genre = movie.genres[0];
-                movieInfo.releaseDate = movie.title.year;
-                movieInfo.description = movie.plotOutline.text;
-
-                setStateCallback(movieInfo);
-                console.log(movie);
-            }
-
-            detailsRequest.open("GET", "https://online-movie-database.p.rapidapi.com/title/get-overview-details?tconst=" + resultId + "&currentCountry=US");
-            detailsRequest.setRequestHeader("X-RapidAPI-Key", apiKey);
-            detailsRequest.setRequestHeader("X-RapidAPI-Host", "online-movie-database.p.rapidapi.com");
-
-            detailsRequest.send();
+    return fetch("https://online-movie-database.p.rapidapi.com/title/v2/find?title=" + title + "&limit=1&sortArg=moviemeter%2Casc", {
+        headers: myHeaders
+    })
+    .then((response) => {
+        if(!response.ok){
+            throw new Error("Network response failed with code: " + response.status, {cause: response});
         }
-    }
+        return response.json();
+    })
+    .then((result) => {
+        console.log(result)
+        if(result.totalMatches == 0){
+            throw new Error("No matches for the request query");
+        }
+        let resultId = result.results[0].id.slice(7, -1);
+        //Fetching more details about the movie
+        return fetch("https://online-movie-database.p.rapidapi.com/title/get-overview-details?tconst=" + resultId + "&currentCountry=US", {
+            headers: myHeaders
+        })
+    })
+    .then(response => response.json())
+    .then((result) => {
+        
+        let movie = {};
+        movie.id = result.id.slice(7, -1);
+        movie.title = result.title.title;
+        movie.image = result.title.image.url;
+        movie.rating = result.ratings.rating;
+        movie.type = result.title.titleType.charAt(0).toUpperCase() + result.title.titleType.slice(1);;
+        movie.genre = result.genres[0];
+        movie.releaseDate = result.title.year;
+        movie.description = result.plotOutline.text;
 
-    xhr.open("GET", "https://online-movie-database.p.rapidapi.com/title/v2/find?title=" + title + "&limit=1&sortArg=moviemeter%2Casc");
-    xhr.setRequestHeader("X-RapidAPI-Key", apiKey);
-    xhr.setRequestHeader("X-RapidAPI-Host", "online-movie-database.p.rapidapi.com");
-    xhr.withCredentials = false;
-
-    xhr.send();
-
+        return movie;
+    })
+    
 }
 
 
